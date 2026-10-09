@@ -144,3 +144,8 @@ try {
     if ($server) { Stop-Process -Id $server.Id -Force -ErrorAction SilentlyContinue }
     Remove-Item -LiteralPath $work -Recurse -Force -ErrorAction SilentlyContinue
 }
+
+# A failure throws (Fail); reaching here means every check passed. Without
+# this the last native command's exit code (a deliberately failing install)
+# leaks out as the step's result: CI read a passing run as exit 1.
+exit 0
