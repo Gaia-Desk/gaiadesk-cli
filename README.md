@@ -1,7 +1,19 @@
 # gaiadesk-cli
 
-One tool to run commands, copy files, run jobs and drive screens on your
-GaiaDesk computers ("desks"), from scripts, CI and AI agents.
+[![npm](https://img.shields.io/npm/v/@gaiadesk/cli?label=npm%20%40gaiadesk%2Fcli)](https://www.npmjs.com/package/@gaiadesk/cli)
+[![npm downloads](https://img.shields.io/npm/dm/@gaiadesk/cli)](https://www.npmjs.com/package/@gaiadesk/cli)
+[![Latest release](https://img.shields.io/github/v/release/Gaia-Desk/gaiadesk-releases?label=release)](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest)
+[![Homebrew](https://img.shields.io/badge/homebrew-gaia--desk%2Ftap%2Fgaiadesk-orange)](https://github.com/Gaia-Desk/homebrew-tap)
+[![CI](https://github.com/Gaia-Desk/gaiadesk-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/Gaia-Desk/gaiadesk-cli/actions/workflows/ci.yml)
+[![License: MIT (docs and installers)](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+The **GaiaDesk command line** (`gaiadesk`): run remote commands, open a
+remote shell, copy files, run background jobs, forward ports and drive
+screens on your GaiaDesk computers ("desks") on macOS, Windows and Linux,
+from scripts, CI/CD pipelines and AI agents. Think `ssh`, `scp` and `ssh -L`
+for every machine you reach with [GaiaDesk](https://gaiadesk.net) remote
+desktop, with JSON output, real exit codes, scoped agent tokens and a
+built-in MCP server.
 
 ```sh
 gaiadesk devices                                # the desks you can reach
@@ -25,6 +37,7 @@ GaiaDesk is closed-source; nothing here is GaiaDesk code.
 - [JSON output and errors](#json-output-and-errors)
 - [Command reference](docs/commands.md)
 - [SDKs and MCP](#sdks-and-mcp)
+- [Links](#links)
 - [License](#license)
 
 ## Install
@@ -72,8 +85,21 @@ terminal afterwards so it sees the new `PATH`.
 brew install gaia-desk/tap/gaiadesk
 ```
 
-**Direct download.** Each release has, for `darwin-arm64`, `darwin-x64`,
-`linux-x64`, `linux-arm64`, `windows-x64` and `windows-arm64`:
+**Direct download.** The CLI binaries are published on
+[GaiaDesk releases](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest)
+with every app release. The latest build for each platform:
+
+| Platform | Archive | Checksum |
+| --- | --- | --- |
+| macOS, Apple silicon | [`gaiadesk-cli-darwin-arm64.tar.gz`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-darwin-arm64.tar.gz) | [`.sha256`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-darwin-arm64.tar.gz.sha256) |
+| macOS, Intel | [`gaiadesk-cli-darwin-x64.tar.gz`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-darwin-x64.tar.gz) | [`.sha256`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-darwin-x64.tar.gz.sha256) |
+| Linux x64 (glibc) | [`gaiadesk-cli-linux-x64.tar.gz`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-linux-x64.tar.gz) | [`.sha256`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-linux-x64.tar.gz.sha256) |
+| Linux arm64 (glibc) | [`gaiadesk-cli-linux-arm64.tar.gz`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-linux-arm64.tar.gz) | [`.sha256`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-linux-arm64.tar.gz.sha256) |
+| Windows x64 | [`gaiadesk-cli-windows-x64.zip`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-windows-x64.zip) | [`.sha256`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-windows-x64.zip.sha256) |
+| Windows arm64 | [`gaiadesk-cli-windows-arm64.zip`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-windows-arm64.zip) | [`.sha256`](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download/gaiadesk-cli-windows-arm64.zip.sha256) |
+
+Each release has, for `darwin-arm64`, `darwin-x64`, `linux-x64`,
+`linux-arm64`, `windows-x64` and `windows-arm64`:
 
 | Asset | |
 | --- | --- |
@@ -232,9 +258,29 @@ a script can test for.
 
 ## SDKs and MCP
 
-- **TypeScript / Node.js**: [Gaia-Desk/gaiadesk-typescript](https://github.com/Gaia-Desk/gaiadesk-typescript) (`npm install @gaiadesk/sdk`)
-- **Python**: [Gaia-Desk/gaiadesk-python](https://github.com/Gaia-Desk/gaiadesk-python) (`pip install gaiadesk`)
-- **MCP server** for AI assistants: [Gaia-Desk/gaiadesk-mcp](https://github.com/Gaia-Desk/gaiadesk-mcp) (`npx -y @gaiadesk/mcp`)
+- **MCP server** for AI assistants (Claude, Cursor, VS Code, ...): [Gaia-Desk/gaiadesk-mcp](https://github.com/Gaia-Desk/gaiadesk-mcp) (`npx -y @gaiadesk/mcp`), or `gaiadesk mcp` directly
+- **TypeScript / Node.js**: [Gaia-Desk/gaiadesk-typescript](https://github.com/Gaia-Desk/gaiadesk-typescript) ([`npm install @gaiadesk/sdk`](https://www.npmjs.com/package/@gaiadesk/sdk))
+- **Go**: [Gaia-Desk/gaiadesk-go](https://github.com/Gaia-Desk/gaiadesk-go) ([pkg.go.dev](https://pkg.go.dev/github.com/Gaia-Desk/gaiadesk-go))
+- **Python, Java/Kotlin, .NET, Ruby, PHP, Rust**: [gaiadesk-python](https://github.com/Gaia-Desk/gaiadesk-python),
+  [gaiadesk-java](https://github.com/Gaia-Desk/gaiadesk-java),
+  [gaiadesk-dotnet](https://github.com/Gaia-Desk/gaiadesk-dotnet),
+  [gaiadesk-ruby](https://github.com/Gaia-Desk/gaiadesk-ruby),
+  [gaiadesk-php](https://github.com/Gaia-Desk/gaiadesk-php),
+  [gaiadesk-rust](https://github.com/Gaia-Desk/gaiadesk-rust)
+
+## Links
+
+- Download GaiaDesk: [gaiadesk.net/download](https://gaiadesk.net/download) ·
+  [latest release](https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest)
+- [The CLI for agents](https://gaiadesk.net/docs/cli-for-agents): using `gaiadesk` from scripts and AI agents
+- [Agent access](https://gaiadesk.net/docs/agent-access): turning it on per desk, scoped tokens, the audit log
+- [Terminal over the Mesh](https://gaiadesk.net/docs/terminal-over-the-mesh)
+- [Unattended access](https://gaiadesk.net/docs/unattended-access) ·
+  [Security](https://gaiadesk.net/docs/security) ·
+  [All docs](https://gaiadesk.net/docs)
+- [MCP server](https://github.com/Gaia-Desk/gaiadesk-mcp) ·
+  [Homebrew tap](https://github.com/Gaia-Desk/homebrew-tap) ·
+  [All GaiaDesk repositories](https://github.com/Gaia-Desk)
 
 ## About this repository
 
