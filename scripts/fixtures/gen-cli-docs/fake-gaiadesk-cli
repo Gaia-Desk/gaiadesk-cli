@@ -1,0 +1,106 @@
+#!/bin/sh
+# A stand-in for gaiadesk-cli in scripts/gen-cli-docs.test.mts: the same help
+# layout (cli_args/help.rs) for a few commands. FAKE_CLI_BROKEN=1 lists a
+# command that has no help.
+
+overview() {
+  cat <<'TXT'
+gaiadesk-cli — reach a GaiaDesk desk from a script, an agent or a terminal.
+
+usage: gaiadesk-cli <command> [options]
+
+commands:
+  exec            run one command on a desk; its output and exit code come back
+  token           create, list or revoke scoped, expiring agent tokens
+  agent run       drive a desk with a model (Agent Access)
+TXT
+  if [ "${FAKE_CLI_BROKEN:-}" = 1 ]; then
+    echo "  broken          a command with no help"
+  fi
+  cat <<'TXT'
+
+`gaiadesk-cli <command> --help` (or `gaiadesk-cli help <command>`) for each one.
+
+credentials (every command that reaches a desk):
+  --token-file <file>               a scoped agent token, chmod 600
+  $GAIADESK_CODE                    the desk's code or password
+TXT
+}
+
+topic() {
+  case "$1" in
+    exec) cat <<'TXT'
+gaiadesk-cli exec — run ONE command on a desk and exit with its exit code.
+
+usage: gaiadesk-cli exec --desk-id <id> [options] -- <command> [args...]
+
+  Like `ssh host cmd`: stdout and stderr come back unaltered, and the exit code is the
+  command's own. A <placeholder> outside code is escaped.
+
+options:
+  --desk-id <id>           the desk (-d)
+  --shell <s>              default | sh | pwsh | cmd | none
+                           ONE argument after `--` is a command line (`-- 'ls | wc -l'`)
+  --json                   print one JSON object: {exit, stdout, stderr}
+
+examples:
+  gaiadesk-cli exec -d 123456789 -- hostname                       (a Windows desk: cmd.exe)
+  gaiadesk-cli exec -d 987654321 --shell sh -- 'uname -a'
+
+exit codes:
+  0-255  the command's own exit code
+  255    gaiadesk-cli's own error
+TXT
+    ;;
+    token) cat <<'TXT'
+gaiadesk-cli token — scoped, expiring agent tokens, administered by the desk's owner.
+
+usage: gaiadesk-cli token create --desk <id> [--name <n>] [--expires 7d]
+                                 [--out <file>] [--json]
+       gaiadesk-cli token list --desk <id> [--json]
+       gaiadesk-cli token revoke --desk <id> <name|id>
+
+  Scopes: exec, shell, cp, forward, jobs, screen.
+TXT
+    ;;
+    agent|"agent run") cat <<'TXT'
+gaiadesk-cli agent run — drive a desk with a model (Agent Access).
+
+usage: gaiadesk-cli agent run --desk-id <id> --task <text> [options]
+
+options: --model <m> --max-steps <n>
+         --out-dir <dir>
+TXT
+    ;;
+    json) cat <<'TXT'
+gaiadesk-cli and JSON — the shapes a program can rely on.
+
+ERRORS: every command that takes --json prints, on stdout, when it fails:
+  {"error": {"kind": "<kind>", "message": "<a sentence>"}}
+TXT
+    ;;
+    *) echo "gaiadesk-cli: no help for \"$1\"" >&2; return 255 ;;
+  esac
+}
+
+login_help() {
+  cat <<'TXT'
+gaiadesk-cli login [--json]    sign this CLI in (shows a code to approve in a browser)
+gaiadesk-cli logout [--json]   sign this CLI out
+
+The server is $GAIADESK_SERVER (a wss:// URL), else production.
+TXT
+}
+
+case "${1:-}" in
+  --version|-V) echo "gaiadesk-cli 9.8.7" ;;
+  --help|-h|"") overview ;;
+  help)
+    shift
+    if [ $# -eq 0 ]; then overview; else topic "$1"; exit $?; fi ;;
+  login|logout)
+    if [ "${2:-}" = --help ]; then login_help; else echo "not signed in" >&2; exit 1; fi ;;
+  *)
+    if [ "${2:-}" = --help ]; then topic "$1"; exit $?; fi
+    echo "gaiadesk-cli: unknown subcommand \"$1\"" >&2; exit 255 ;;
+esac

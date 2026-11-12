@@ -286,9 +286,11 @@ a script can test for.
 
 - [`docs/commands.md`](docs/commands.md): every command, its options and
   examples. It is generated from the CLI's own `--help` output by
-  `scripts/gen-cli-docs.mts` in GaiaDesk's release process and regenerated
-  for each release, so it matches the binary; edit the help text, not this
-  file.
+  [`scripts/gen-cli-docs.mts`](scripts/gen-cli-docs.mts) and regenerated for
+  each release, so it matches the binary; edit the help text, not this file.
+  CI (`docs` workflow, also daily) fails when it differs from what the latest
+  release generates: `node --experimental-strip-types scripts/gen-cli-docs.mts
+  --check <gaiadesk-cli> .`
 - [`install.sh`](install.sh), [`install.ps1`](install.ps1): the installers
   above. CI runs shellcheck, PSScriptAnalyzer, and both installers against a
   fake local release (`test/`); `GAIADESK_DOWNLOAD_BASE` points them at

@@ -1,0 +1,36 @@
+name: docs
+
+# docs/commands.md must be exactly what the LATEST released gaiadesk-cli's own
+# help generates: a documented flag the release lacks, or a release flag the
+# docs lack, fails. Daily, so a new CLI release flags stale docs.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  commands-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: generator tests
+        run: node --experimental-strip-types --test scripts/gen-cli-docs.test.mts
+      - name: download the latest released gaiadesk-cli (linux-x64) and verify its SHA-256
+        run: |
+          mkdir -p "$RUNNER_TEMP/cli" && cd "$RUNNER_TEMP/cli"
+          base=https://github.com/Gaia-Desk/gaiadesk-releases/releases/latest/download
+          curl -fsSL --retry 3 -O "$base/gaiadesk-cli-linux-x64.tar.gz" -O "$base/gaiadesk-cli-linux-x64.tar.gz.sha256"
+          sha256sum -c gaiadesk-cli-linux-x64.tar.gz.sha256
+          tar -xzf gaiadesk-cli-linux-x64.tar.gz gaiadesk-cli
+          ./gaiadesk-cli --version
+      - name: docs/commands.md matches the release
+        run: node --experimental-strip-types scripts/gen-cli-docs.mts --check "$RUNNER_TEMP/cli/gaiadesk-cli" .
